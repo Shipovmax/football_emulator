@@ -1,0 +1,22 @@
+[
+  {
+    "team_id": 1,
+    "team_name": "Dragons",
+    "player_ids": [1, 5, 7, 9, 10, 12, 15, 17, 20, 22, 26]
+  },
+  {
+    "team_id": 2,
+    "team_name": "Tigers",
+    "player_ids": [2, 6, 8, 11, 13, 16, 18, 21, 23, 24, 27]
+  },
+  {
+    "team_id": 3,
+    "team_name": "Eagles",
+    "player_ids": [3, 14, 19, 25, 28, 29, 31, 33, 34, 36, 37]
+  },
+  {
+    "team_id": 4,
+    "team_name": "Wolves",
+    "player_ids": [4, 30, 32, 35, 38, 39, 40, 41, 42, 43, 44]
+  }
+]
