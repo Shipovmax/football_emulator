@@ -1,0 +1,66 @@
+[
+  {
+    "match_id": 1,
+    "stage": "quarterfinal",
+    "home_team_id": 1,
+    "away_team_id": 2,
+    "date": "2024-01-15",
+    "status": "completed",
+    "score": {
+      "home": 3,
+      "away": 1
+    },
+    "goals": [
+      {
+        "minute": 23,
+        "team_id": 1,
+        "player_id": 26,
+        "type": "open_play",
+        "description": "Красивый удар из-за пределов штрафной"
+      }
+    ],
+    "winner_id": 1
+  },
+  {
+    "match_id": 2,
+    "stage": "quarterfinal",
+    "home_team_id": 3,
+    "away_team_id": 4,
+    "date": "2024-01-16",
+    "status": "scheduled",
+    "score": {
+      "home": null,
+      "away": null
+    },
+    "goals": [],
+    "winner_id": null
+  },
+  {
+    "match_id": 3,
+    "stage": "semifinal",
+    "home_team_id": 1,
+    "away_team_id": 3,
+    "date": "2024-01-20",
+    "status": "scheduled",
+    "score": {
+      "home": null,
+      "away": null
+    },
+    "goals": [],
+    "winner_id": null
+  },
+  {
+    "match_id": 4,
+    "stage": "final",
+    "home_team_id": 1,
+    "away_team_id": 2,
+    "date": "2024-01-25",
+    "status": "scheduled",
+    "score": {
+      "home": null,
+      "away": null
+    },
+    "goals": [],
+    "winner_id": null
+  }
+]
