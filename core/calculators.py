@@ -1,10 +1,10 @@
 import math
 import random
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 class PlayerCalculator:
-    def calculate_player_value(self, player):
+    def calculate_player_value(self, player: Dict[str, Any]) -> int:
         base_value = player["overall"] * 10000
         age_modifier = self._calculate_age_modifier(player["age"])
         potential_modifier = (player["potential"] - player["overall"]) * 5000
@@ -16,7 +16,7 @@ class PlayerCalculator:
         )
         return max(10000, int(total_value))
 
-    def _calculate_age_modifier(self, age):
+    def _calculate_age_modifier(self, age: int) -> float:
         if age <= 21:
             return 0.7
         elif age <= 23:
@@ -30,7 +30,7 @@ class PlayerCalculator:
         else:
             return 0.6
 
-    def _calculate_rarity_bonus(self, player):
+    def _calculate_rarity_bonus(self, player: Dict[str, Any]) -> int:
         bonus = 0
         if player["position"] in ["forward", "winger"] and player["defence"] > 70:
             bonus += 20000
@@ -48,7 +48,15 @@ class PlayerCalculator:
 
 
 class ChemistryCalculator:
-    def calculate_team_chemistry(self, team_players):
+    """Unused in the current app (DataLoader hardcodes chemistry to 85).
+
+    NOTE: calculate_team_chemistry references _calculate_playing_style_compatibility
+    and _calculate_experience_bonus, which are not defined on this class — calling
+    it as-is raises AttributeError. Left as-is since this class is dead code; fixing
+    the missing methods would mean inventing behavior outside this cleanup's scope.
+    """
+
+    def calculate_team_chemistry(self, team_players: List[Dict[str, Any]]) -> int:
         if len(team_players) < 11:
             return 50
         nationality_score = self._calculate_nationality_bonus(team_players)
@@ -64,8 +72,8 @@ class ChemistryCalculator:
         )
         return min(100, int(total_chemistry))
 
-    def _calculate_nationality_bonus(self, players):
-        nationalities = {}
+    def _calculate_nationality_bonus(self, players: List[Dict[str, Any]]) -> float:
+        nationalities: Dict[str, int] = {}
         for player in players:
             nationality = player["nationality"]
             nationalities[nationality] = nationalities.get(nationality, 0) + 1
@@ -73,7 +81,7 @@ class ChemistryCalculator:
         bonus = (most_common / len(players)) * 100
         return bonus
 
-    def _calculate_age_balance(self, players):
+    def _calculate_age_balance(self, players: List[Dict[str, Any]]) -> int:
         ages = [player["age"] for player in players]
         avg_age = sum(ages) / len(ages)
         if 25 <= avg_age <= 28:
@@ -87,10 +95,10 @@ class ChemistryCalculator:
 
 
 class MatchCalculator:
-    def __init__(self, players: List[Dict]):
+    def __init__(self, players: List[Dict[str, Any]]) -> None:
         self.players = players
 
-    def calculate_team_power(self, team: Dict) -> float:
+    def calculate_team_power(self, team: Dict[str, Any]) -> float:
         team_players = [p for p in self.players if p["id"] in team["player_ids"]]
         if not team_players:
             return 0
@@ -103,7 +111,7 @@ class MatchCalculator:
         )
         return round(total_power, 2)
 
-    def _calculate_balance_bonus(self, players: List[Dict]) -> float:
+    def _calculate_balance_bonus(self, players: List[Dict[str, Any]]) -> float:
         positions = {}
         for player in players:
             pos = player["position"]
@@ -124,7 +132,7 @@ class MatchCalculator:
             balance_score += 1 - min(1, abs(actual_count - ideal_count) / ideal_count)
         return balance_score / len(ideal_distribution) * 0.1
 
-    def _calculate_synergy_bonus(self, players: List[Dict]) -> float:
+    def _calculate_synergy_bonus(self, players: List[Dict[str, Any]]) -> float:
         total_speed = sum(p.get("speed", 50) for p in players)
         total_technique = sum(p.get("technique", 50) for p in players)
         total_physical = sum(p.get("physical", 50) for p in players)
@@ -140,7 +148,7 @@ class MatchCalculator:
 class ProbabilityCalculator:
     @staticmethod
     def calculate_goal_probability(
-        attacker: Dict, defender: Dict, goalkeeper: Dict
+        attacker: Dict[str, Any], defender: Dict[str, Any], goalkeeper: Dict[str, Any]
     ) -> float:
         attacker_rating = (attacker["attack"] + attacker["technique"]) / 2
         defender_rating = defender["defence"] if defender else 50

@@ -1,12 +1,13 @@
 """
-Главный файл футбольного эмулятора с улучшенной навигацией и визуалом
+Main entry point for the football emulator, with a menu-driven navigation flow.
 """
 
 import os
 import sys
 import time
+from typing import Any, Dict, Optional
 
-# Добавляем пути для импорта модулей
+# Add module search paths relative to this file
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../core"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../templates"))
@@ -24,7 +25,7 @@ from templates.players import (
 )
 from templates.teams import print_team_card, print_teams_table
 
-# Определяем цвета для использования в test_skip.py
+# Color codes shared across the console UI
 GREEN_COLOR = "\033[92m"
 BLUE_COLOR = "\033[94m"
 YELLOW_COLOR = "\033[93m"
@@ -34,16 +35,16 @@ RESET_COLOR = "\033[0m"
 
 
 class AdvancedFootballEmulator:
-    def __init__(self):
+    def __init__(self) -> None:
         self.players, self.teams, self.matches = load_all_data()
         self.simulator = MatchSimulator(self.players, self.teams)
         self.current_state = "main_menu"
-        self.selected_match = None
-        self.selected_team = None
-        self.selected_player = None
+        self.selected_match: Optional[Dict[str, Any]] = None
+        self.selected_team: Optional[Dict[str, Any]] = None
+        self.selected_player: Optional[Dict[str, Any]] = None
 
-    def run(self):
-        """Запуск основного цикла эмулятора"""
+    def run(self) -> None:
+        """Run the emulator's main event loop."""
         print_header()
         while True:
             try:
@@ -66,14 +67,14 @@ class AdvancedFootballEmulator:
                 else:
                     self.current_state = "main_menu"
             except KeyboardInterrupt:
-                print("\n\n🔚 Выход из программы...")
+                print("\n\n🔚 Exiting the program...")
                 break
             except Exception as e:
-                print(f"\n❌ Произошла ошибка: {e}")
+                print(f"\n❌ An error occurred: {e}")
                 self.current_state = "main_menu"
 
-    def show_main_menu(self):
-        """Показать главное меню"""
+    def show_main_menu(self) -> None:
+        """Display the main menu."""
         print_main_menu()
         choice = input().strip()
 
@@ -88,15 +89,15 @@ class AdvancedFootballEmulator:
         elif choice == "5":
             self.show_advanced_stats()
         elif choice == "0":
-            print("👋 До свидания!")
+            print("👋 Goodbye!")
             sys.exit()
         else:
-            print("❌ Неверный выбор. Попробуйте снова.")
+            print("❌ Invalid choice. Try again.")
 
-    def show_tournament_bracket(self):
-        """Показать турнирную сетку"""
+    def show_tournament_bracket(self) -> None:
+        """Display the tournament bracket."""
         print_tournament_bracket(self.matches, self.teams)
-        print_secondary_menu("главное меню")
+        print_secondary_menu("main menu")
         choice = input().strip()
 
         if choice == "0":
@@ -109,32 +110,32 @@ class AdvancedFootballEmulator:
             if self.selected_match:
                 self.current_state = "match_details"
             else:
-                print("❌ Матч не найден!")
+                print("❌ Match not found!")
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_match_details(self):
-        """Показать детали матча"""
+    def show_match_details(self) -> None:
+        """Display the details of the selected match."""
         if not self.selected_match:
             self.current_state = "tournament_bracket"
             return
 
         print_match_details(self.selected_match, self.teams, self.players)
 
-        print(f"\n{YELLOW_COLOR}ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ:{RESET_COLOR}")
-        print("1 - 🔄 Симулировать матч (если не сыгран)")
-        print("2 - 👥 Показать составы команд")
-        print("3 - 📊 Подробная статистика")
-        print("0 - ↩️ Назад к сетке")
-        print("\nВыберите опцию: ", end="")
+        print(f"\n{YELLOW_COLOR}ADDITIONAL OPTIONS:{RESET_COLOR}")
+        print("1 - 🔄 Simulate match (if not played)")
+        print("2 - 👥 Show team lineups")
+        print("3 - 📊 Detailed statistics")
+        print("0 - ↩️ Back to bracket")
+        print("\nChoose an option: ", end="")
 
         choice = input().strip()
 
         if choice == "1" and self.selected_match["status"] != "completed":
-            # Используем текущее время как seed для случайности
+            # Use the current time as the random seed
             seed = int(time.time())
             self.simulator.simulate_match(self.selected_match, seed=seed)
-            print("✅ Матч успешно симулирован!")
+            print("✅ Match simulated successfully!")
         elif choice == "2":
             self.show_match_lineups()
         elif choice == "3":
@@ -143,10 +144,10 @@ class AdvancedFootballEmulator:
             self.current_state = "tournament_bracket"
             self.selected_match = None
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_match_lineups(self):
-        """Показать составы команд в матче"""
+    def show_match_lineups(self) -> None:
+        """Display both teams' lineups for the selected match."""
         if not self.selected_match:
             return
 
@@ -167,7 +168,7 @@ class AdvancedFootballEmulator:
             None,
         )
 
-        print(f"\n{CYAN_COLOR}=== СОСТАВЫ КОМАНД ==={RESET_COLOR}")
+        print(f"\n{CYAN_COLOR}=== TEAM LINEUPS ==={RESET_COLOR}")
 
         if home_team:
             home_players = [
@@ -182,7 +183,7 @@ class AdvancedFootballEmulator:
             print_players_table(away_players, away_team["team_name"])
 
         print(
-            f"\n{YELLOW_COLOR}Выберите игрока по ID для просмотра карточки или 0 для возврата: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Select a player by ID to view their card or 0 to go back: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -196,14 +197,14 @@ class AdvancedFootballEmulator:
                 self.selected_player = player
                 self.show_player_details()
             else:
-                print("❌ Игрок не найден!")
+                print("❌ Player not found!")
 
-    def show_teams_list(self):
-        """Показать список всех команд"""
+    def show_teams_list(self) -> None:
+        """Display the full list of teams."""
         print_teams_table(self.teams, self.players)
 
         print(
-            f"\n{YELLOW_COLOR}Выберите команду по ID для деталей или 0 для возврата: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Select a team by ID for details or 0 to go back: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -218,12 +219,12 @@ class AdvancedFootballEmulator:
             if self.selected_team:
                 self.current_state = "team_details"
             else:
-                print("❌ Команда не найден!")
+                print("❌ Team not found!")
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_team_details(self):
-        """Показать детали команды"""
+    def show_team_details(self) -> None:
+        """Display the details of the selected team."""
         if not self.selected_team:
             self.current_state = "teams_list"
             return
@@ -235,7 +236,7 @@ class AdvancedFootballEmulator:
         print_players_table(team_players, self.selected_team["team_name"])
 
         print(
-            f"\n{YELLOW_COLOR}Выберите игрока по ID для просмотра карточки или 0 для возврата: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Select a player by ID to view their card or 0 to go back: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -250,16 +251,16 @@ class AdvancedFootballEmulator:
                 self.selected_player = player
                 self.current_state = "player_details"
             else:
-                print("❌ Игрок не найден!")
+                print("❌ Player not found!")
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_players_list(self):
-        """Показать список всех игроков"""
+    def show_players_list(self) -> None:
+        """Display the full list of players."""
         print_players_table(self.players)
 
         print(
-            f"\n{YELLOW_COLOR}Выберите игрока по ID для просмотра карточки или 0 для возврата: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Select a player by ID to view their card or 0 to go back: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -274,41 +275,41 @@ class AdvancedFootballEmulator:
             if self.selected_player:
                 self.current_state = "player_details"
             else:
-                print("❌ Игрок не найден!")
+                print("❌ Player not found!")
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_player_details(self):
-        """Показать карточку игрока"""
+    def show_player_details(self) -> None:
+        """Display the selected player's card."""
         if not self.selected_player:
             self.current_state = "players_list"
             return
 
         print_player_card_ascii(self.selected_player)
 
-        print(f"\n{YELLOW_COLOR}ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ:{RESET_COLOR}")
-        print("1 - 🔄 Сравнить с другим игроком")
-        print("0 - ↩️ Назад")
-        print("\nВыберите опцию: ", end="")
+        print(f"\n{YELLOW_COLOR}ADDITIONAL OPTIONS:{RESET_COLOR}")
+        print("1 - 🔄 Compare with another player")
+        print("0 - ↩️ Back")
+        print("\nChoose an option: ", end="")
 
         choice = input().strip()
 
         if choice == "1":
             self.compare_players()
         elif choice == "0":
-            # Возвращаемся в предыдущее состояние
+            # Return to the previous state
             if self.selected_team:
                 self.current_state = "team_details"
             else:
                 self.current_state = "players_list"
             self.selected_player = None
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def compare_players(self):
-        """Сравнить двух игроков"""
+    def compare_players(self) -> None:
+        """Compare the selected player against another player by ID."""
         print(
-            f"\n{YELLOW_COLOR}Введите ID второго игрока для сравнения: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Enter the ID of the second player to compare: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -318,19 +319,19 @@ class AdvancedFootballEmulator:
             player2 = next((p for p in self.players if p["id"] == player2_id), None)
             if player2:
                 print_player_comparison(self.selected_player, player2)
-                input(f"\n{YELLOW_COLOR}Нажмите Enter для продолжения...{RESET_COLOR}")
+                input(f"\n{YELLOW_COLOR}Press Enter to continue...{RESET_COLOR}")
             else:
-                print("❌ Игрок не найден!")
+                print("❌ Player not found!")
         else:
-            print("❌ Неверный формат ID!")
+            print("❌ Invalid ID format!")
 
-    def simulate_match(self):
-        """Симулировать выбранный матч"""
-        print(f"\n{CYAN_COLOR}=== СИМУЛЯЦИЯ МАТЧА ==={RESET_COLOR}")
+    def simulate_match(self) -> None:
+        """Simulate a match chosen from the bracket."""
+        print(f"\n{CYAN_COLOR}=== MATCH SIMULATION ==={RESET_COLOR}")
         print_tournament_bracket(self.matches, self.teams)
 
         print(
-            f"\n{YELLOW_COLOR}Выберите матч для симуляции (1-{len(self.matches)}) или 0 для отмены: {RESET_COLOR}",
+            f"\n{YELLOW_COLOR}Select a match to simulate (1-{len(self.matches)}) or 0 to cancel: {RESET_COLOR}",
             end="",
         )
         choice = input().strip()
@@ -344,58 +345,58 @@ class AdvancedFootballEmulator:
             if match:
                 if match["status"] == "completed":
                     print(
-                        "❌ Этот матч уже сыгран! Симулировать заново? (y/n): ", end=""
+                        "❌ This match has already been played! Simulate again? (y/n): ", end=""
                     )
                     if input().strip().lower() != "y":
                         return
 
-                print("🔄 Симулируем матч...")
+                print("🔄 Simulating the match...")
 
-                # Используем текущее время как seed для случайности
+                # Use the current time as the random seed
                 seed = int(time.time())
 
-                # Динамическая симуляция
+                # Run the dynamic simulation
                 self.simulator.simulate_match(match, seed=seed)
-                print("✅ Матч успешно симулирован!")
+                print("✅ Match simulated successfully!")
                 self.selected_match = match
                 self.current_state = "match_details"
             else:
-                print("❌ Матч не найден!")
+                print("❌ Match not found!")
         else:
-            print("❌ Неверный выбор!")
+            print("❌ Invalid choice!")
 
-    def show_advanced_stats(self):
-        """Показать расширенную статистику"""
-        print(f"\n{CYAN_COLOR}=== РАСШИРЕННАЯ СТАТИСТИКА ==={RESET_COLOR}")
+    def show_advanced_stats(self) -> None:
+        """Display advanced player and team statistics."""
+        print(f"\n{CYAN_COLOR}=== ADVANCED STATISTICS ==={RESET_COLOR}")
 
-        # Топ игроков по рейтингу
+        # Top players by overall rating
         top_players = sorted(self.players, key=lambda x: x["overall"], reverse=True)[:5]
-        print(f"\n{YELLOW_COLOR}🏆 ТОП-5 ИГРОКОВ ПО РЕЙТИНГУ:{RESET_COLOR}")
+        print(f"\n{YELLOW_COLOR}🏆 TOP 5 PLAYERS BY RATING:{RESET_COLOR}")
         for i, player in enumerate(top_players, 1):
             print(f"{i}. {player['name']} - {player['overall']} OVR")
 
-        # Статистика команд
-        print(f"\n{YELLOW_COLOR}📈 СТАТИСТИКА КОМАНД:{RESET_COLOR}")
+        # Team statistics
+        print(f"\n{YELLOW_COLOR}📈 TEAM STATISTICS:{RESET_COLOR}")
         for team in self.teams:
             team_players = [p for p in self.players if p["id"] in team["player_ids"]]
             avg_age = sum(p["age"] for p in team_players) / len(team_players)
             avg_rating = sum(p["overall"] for p in team_players) / len(team_players)
             print(
-                f"{team['team_name']}: средний возраст {avg_age:.1f}, средний рейтинг {avg_rating:.1f}"
+                f"{team['team_name']}: average age {avg_age:.1f}, average rating {avg_rating:.1f}"
             )
 
-        input(f"\n{YELLOW_COLOR}Нажмите Enter для возврата...{RESET_COLOR}")
+        input(f"\n{YELLOW_COLOR}Press Enter to go back...{RESET_COLOR}")
 
-    def show_detailed_stats(self):
-        """Показать детальную статистику матча"""
+    def show_detailed_stats(self) -> None:
+        """Display detailed statistics for the selected match."""
         if not self.selected_match or not self.selected_match.get("statistics"):
-            print("❌ Статистика недоступна для этого матча!")
+            print("❌ No statistics available for this match!")
             return
 
         stats = self.selected_match["statistics"]
-        print(f"\n{CYAN_COLOR}=== ДЕТАЛЬНАЯ АНАЛИТИКА МАТЧА ==={RESET_COLOR}")
+        print(f"\n{CYAN_COLOR}=== DETAILED MATCH ANALYTICS ==={RESET_COLOR}")
 
-        # Анализ эффективности атак
+        # Attack efficiency analysis
         home_shots = stats["shots"]["home"]
         home_on_target = stats["shots_on_target"]["home"]
         home_efficiency = (home_on_target / home_shots * 100) if home_shots > 0 else 0
@@ -404,27 +405,27 @@ class AdvancedFootballEmulator:
         away_on_target = stats["shots_on_target"]["away"]
         away_efficiency = (away_on_target / away_shots * 100) if away_shots > 0 else 0
 
-        print(f"\n{YELLOW_COLOR}🎯 ЭФФЕКТИВНОСТЬ АТАК:{RESET_COLOR}")
+        print(f"\n{YELLOW_COLOR}🎯 ATTACK EFFICIENCY:{RESET_COLOR}")
         print(
-            f"Домашняя команда: {home_efficiency:.1f}% ({home_on_target}/{home_shots} в створ)"
+            f"Home team: {home_efficiency:.1f}% ({home_on_target}/{home_shots} on target)"
         )
         print(
-            f"Гостевая команда: {away_efficiency:.1f}% ({away_on_target}/{away_shots} в створ)"
+            f"Away team: {away_efficiency:.1f}% ({away_on_target}/{away_shots} on target)"
         )
 
-        input(f"\n{YELLOW_COLOR}Нажмите Enter для возврата...{RESET_COLOR}")
+        input(f"\n{YELLOW_COLOR}Press Enter to go back...{RESET_COLOR}")
 
 
-def main():
-    """Главная функция запуска приложения"""
+def main() -> None:
+    """Application entry point."""
     try:
-        print("🚀 Запуск футбольного эмулятора...")
+        print("🚀 Starting the football emulator...")
         emulator = AdvancedFootballEmulator()
         emulator.run()
     except KeyboardInterrupt:
-        print("\n\n🔚 Программа прервана пользователем")
+        print("\n\n🔚 Program interrupted by user")
     except Exception as e:
-        print(f"\n💥 Критическая ошибка: {e}")
+        print(f"\n💥 Critical error: {e}")
 
 
 if __name__ == "__main__":

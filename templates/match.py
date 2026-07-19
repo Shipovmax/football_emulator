@@ -1,3 +1,5 @@
+from typing import Any, Dict, List
+
 GREEN_COLOR = "\033[92m"
 BLUE_COLOR = "\033[94m"
 YELLOW_COLOR = "\033[93m"
@@ -6,20 +8,20 @@ CYAN_COLOR = "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def print_match_details(match: dict, teams: list, players: list):
+def print_match_details(match: Dict[str, Any], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
     home_team = next((t for t in teams if t["team_id"] == match["home_team_id"]), None)
     away_team = next((t for t in teams if t["team_id"] == match["away_team_id"]), None)
     if not home_team or not away_team:
-        print("❌ Ошибка: команды не найдены!")
+        print("❌ Error: teams not found!")
         return
 
-    print(f"\n{CYAN_COLOR}=== ДЕТАЛИ МАТЧА ==={RESET_COLOR}")
+    print(f"\n{CYAN_COLOR}=== MATCH DETAILS ==={RESET_COLOR}")
     print(f"{BLUE_COLOR}┌──────────────────────────────────┐{RESET_COLOR}")
     print(
-        f"{BLUE_COLOR}│{RESET_COLOR} Матч #{match['match_id']:2d} {' ':20} {BLUE_COLOR}│{RESET_COLOR}"
+        f"{BLUE_COLOR}│{RESET_COLOR} Match #{match['match_id']:2d} {' ':20} {BLUE_COLOR}│{RESET_COLOR}"
     )
     print(
-        f"{BLUE_COLOR}│{RESET_COLOR} {match.get('stage', 'Групповой этап'):^30} {BLUE_COLOR}│{RESET_COLOR}"
+        f"{BLUE_COLOR}│{RESET_COLOR} {match.get('stage', 'Group stage'):^30} {BLUE_COLOR}│{RESET_COLOR}"
     )
     print(f"{BLUE_COLOR}├──────────────────────────────────┤{RESET_COLOR}")
 
@@ -42,14 +44,14 @@ def print_match_details(match: dict, teams: list, players: list):
                 home_team if match["winner_id"] == home_team["team_id"] else away_team
             )
             print(
-                f"{BLUE_COLOR}│{RESET_COLOR} Победитель: {GREEN_COLOR}{winner['team_name']:<18}{RESET_COLOR} {BLUE_COLOR}│{RESET_COLOR}"
+                f"{BLUE_COLOR}│{RESET_COLOR} Winner: {GREEN_COLOR}{winner['team_name']:<18}{RESET_COLOR} {BLUE_COLOR}│{RESET_COLOR}"
             )
     else:
         print(
             f"{BLUE_COLOR}│{RESET_COLOR} {home_team['team_name'][:15]:15} {' vs '} {away_team['team_name'][:15]:15} {BLUE_COLOR}│{RESET_COLOR}"
         )
         print(
-            f"{BLUE_COLOR}│{RESET_COLOR} {'МАТЧ ЕЩЕ НЕ СОСТОЯЛСЯ':^30} {BLUE_COLOR}│{RESET_COLOR}"
+            f"{BLUE_COLOR}│{RESET_COLOR} {'MATCH NOT PLAYED YET':^30} {BLUE_COLOR}│{RESET_COLOR}"
         )
 
     print(f"{BLUE_COLOR}└──────────────────────────────────┘{RESET_COLOR}")
@@ -61,20 +63,20 @@ def print_match_details(match: dict, teams: list, players: list):
         print_match_events(match["events"], teams, players)
 
 
-def print_match_statistics(stats: dict, home_team: dict, away_team: dict):
-    print(f"\n{YELLOW_COLOR}📊 СТАТИСТИКА МАТЧА:{RESET_COLOR}")
+def print_match_statistics(stats: Dict[str, Any], home_team: Dict[str, Any], away_team: Dict[str, Any]) -> None:
+    print(f"\n{YELLOW_COLOR}📊 MATCH STATISTICS:{RESET_COLOR}")
     print(f"{BLUE_COLOR}┌──────────────────┬──────────┬──────────┐{RESET_COLOR}")
     print(
-        f"{BLUE_COLOR}│ Показатель       │ {home_team['team_name'][:8]:8} │ {away_team['team_name'][:8]:8} {BLUE_COLOR}│{RESET_COLOR}"
+        f"{BLUE_COLOR}│ Stat             │ {home_team['team_name'][:8]:8} │ {away_team['team_name'][:8]:8} {BLUE_COLOR}│{RESET_COLOR}"
     )
     print(f"{BLUE_COLOR}├──────────────────┼──────────┼──────────┤{RESET_COLOR}")
 
     statistics = [
-        ("Владение мячом", "possession", "%"),
-        ("Удары", "shots", ""),
-        ("Удары в створ", "shots_on_target", ""),
-        ("Угловые", "corners", ""),
-        ("Фолы", "fouls", ""),
+        ("Possession", "possession", "%"),
+        ("Shots", "shots", ""),
+        ("Shots on target", "shots_on_target", ""),
+        ("Corners", "corners", ""),
+        ("Fouls", "fouls", ""),
     ]
 
     for stat_name, stat_key, suffix in statistics:
@@ -102,13 +104,13 @@ def print_match_statistics(stats: dict, home_team: dict, away_team: dict):
     print(f"{BLUE_COLOR}└──────────────────┴──────────┴──────────┘{RESET_COLOR}")
 
 
-def print_match_events(events: list, teams: list, players: list):
-    print(f"\n{YELLOW_COLOR}⏰ ХРОНОЛОГИЯ СОБЫТИЙ:{RESET_COLOR}")
+def print_match_events(events: List[Dict[str, Any]], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+    print(f"\n{YELLOW_COLOR}⏰ EVENT TIMELINE:{RESET_COLOR}")
     print(
         f"{BLUE_COLOR}┌──────┬──────────┬────────────────────────────────┐{RESET_COLOR}"
     )
     print(
-        f"{BLUE_COLOR}│ Минута │ Тип      │ Описание                      │{RESET_COLOR}"
+        f"{BLUE_COLOR}│ Min  │ Type     │ Description                   │{RESET_COLOR}"
     )
     print(
         f"{BLUE_COLOR}├──────┼──────────┼────────────────────────────────┤{RESET_COLOR}"
@@ -120,15 +122,15 @@ def print_match_events(events: list, teams: list, players: list):
         team = next((t for t in teams if t["team_id"] == event["team_id"]), None)
 
         if event_type == "goal":
-            icon, color, event_type_name = "⚽", GREEN_COLOR, "Гол"
+            icon, color, event_type_name = "⚽", GREEN_COLOR, "Goal"
         elif event_type == "shot":
-            icon, color, event_type_name = "🎯", YELLOW_COLOR, "Удар"
+            icon, color, event_type_name = "🎯", YELLOW_COLOR, "Shot"
         elif event_type == "foul":
-            icon, color, event_type_name = "💥", RED_COLOR, "Фол"
+            icon, color, event_type_name = "💥", RED_COLOR, "Foul"
         elif event_type == "corner":
-            icon, color, event_type_name = "↩️", BLUE_COLOR, "Угловой"
+            icon, color, event_type_name = "↩️", BLUE_COLOR, "Corner"
         elif event_type == "yellow_card":
-            icon, color, event_type_name = "🟨", YELLOW_COLOR, "Желтая"
+            icon, color, event_type_name = "🟨", YELLOW_COLOR, "Yellow"
         else:
             icon, color, event_type_name = "🔹", CYAN_COLOR, event_type
 

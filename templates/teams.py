@@ -1,3 +1,5 @@
+from typing import Any, Dict, List
+
 GREEN_COLOR = "\033[92m"
 BLUE_COLOR = "\033[94m"
 YELLOW_COLOR = "\033[93m"
@@ -6,7 +8,7 @@ CYAN_COLOR = "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def print_team_card(team: dict, players: list):
+def print_team_card(team: Dict[str, Any], players: List[Dict[str, Any]]) -> None:
     team_players = [p for p in players if p["id"] in team["player_ids"]]
     avg_overall = (
         sum(p["overall"] for p in team_players) / len(team_players)
@@ -22,26 +24,26 @@ def print_team_card(team: dict, players: list):
     )
     print(f"{CYAN_COLOR}├──────────────────────────────────┤{RESET_COLOR}")
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Химия команды: {team.get('chemistry', 0):3d}/100{' ':12} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Team chemistry: {team.get('chemistry', 0):3d}/100{' ':11} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Стиль игры: {team.get('play_style', 'Атакующий'):<18} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Play style: {team.get('play_style', 'Attacking'):<18} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Средний рейтинг: {avg_overall:5.1f}{' ':9} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Average rating: {avg_overall:5.1f}{' ':10} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(f"{CYAN_COLOR}├──────────────────────────────────┤{RESET_COLOR}")
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Сила атаки:    {create_stat_bar(attack_power)}{attack_power:3d} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Attack power:  {create_stat_bar(attack_power)}{attack_power:3d} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Сила защиты:   {create_stat_bar(defense_power)}{defense_power:3d} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Defense power: {create_stat_bar(defense_power)}{defense_power:3d} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(
-        f"{CYAN_COLOR}│{RESET_COLOR} Общая сила:    {create_stat_bar(team.get('power', 0))}{team.get('power', 0):3d} {CYAN_COLOR}│{RESET_COLOR}"
+        f"{CYAN_COLOR}│{RESET_COLOR} Overall power: {create_stat_bar(team.get('power', 0))}{team.get('power', 0):3d} {CYAN_COLOR}│{RESET_COLOR}"
     )
     print(f"{CYAN_COLOR}├──────────────────────────────────┤{RESET_COLOR}")
-    print(f"{CYAN_COLOR}│{RESET_COLOR} Состав:{' ':25} {CYAN_COLOR}│{RESET_COLOR}")
+    print(f"{CYAN_COLOR}│{RESET_COLOR} Roster:{' ':25} {CYAN_COLOR}│{RESET_COLOR}")
 
     positions = {}
     for player in team_players:
@@ -49,14 +51,14 @@ def print_team_card(team: dict, players: list):
         positions[pos] = positions.get(pos, 0) + 1
 
     position_names = {
-        "goalkeeper": "Вратари",
-        "center_back": "Центр. защитники",
-        "fullback": "Крайние защитники",
-        "defensive_midfielder": "Опорные полузащитники",
-        "center_midfielder": "Центр. полузащитники",
-        "attacking_midfielder": "Атак. полузащитники",
-        "winger": "Крайние нападающие",
-        "forward": "Нападающие",
+        "goalkeeper": "Goalkeepers",
+        "center_back": "Center backs",
+        "fullback": "Fullbacks",
+        "defensive_midfielder": "Defensive midfielders",
+        "center_midfielder": "Center midfielders",
+        "attacking_midfielder": "Attacking midfielders",
+        "winger": "Wingers",
+        "forward": "Forwards",
     }
 
     for pos_key, pos_name in position_names.items():
@@ -69,7 +71,7 @@ def print_team_card(team: dict, players: list):
     print(f"{CYAN_COLOR}└──────────────────────────────────┘{RESET_COLOR}")
 
 
-def calculate_team_attack_power(players: list) -> int:
+def calculate_team_attack_power(players: List[Dict[str, Any]]) -> int:
     attacking_positions = ["forward", "winger", "attacking_midfielder"]
     attacking_players = [p for p in players if p["position"] in attacking_positions]
     if not attacking_players:
@@ -80,7 +82,7 @@ def calculate_team_attack_power(players: list) -> int:
     return min(100, int(total_attack / (len(attacking_players) * 3)))
 
 
-def calculate_team_defense_power(players: list) -> int:
+def calculate_team_defense_power(players: List[Dict[str, Any]]) -> int:
     defending_positions = [
         "goalkeeper",
         "center_back",
@@ -108,13 +110,13 @@ def create_stat_bar(value: int, max_value: int = 100, length: int = 10) -> str:
     return f"{color}{bar}{RESET_COLOR}"
 
 
-def print_teams_table(teams: list, players: list):
-    print(f"\n{CYAN_COLOR}=== СПИСОК КОМАНД ==={RESET_COLOR}")
+def print_teams_table(teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+    print(f"\n{CYAN_COLOR}=== TEAM LIST ==={RESET_COLOR}")
     print(
         f"{BLUE_COLOR}┌─────┬────────────────────┬─────────┬─────────┬─────────┬──────────┐{RESET_COLOR}"
     )
     print(
-        f"{BLUE_COLOR}│ ID  │ Название           │ Игроков │ Атака   │ Защита  │ Химия    │{RESET_COLOR}"
+        f"{BLUE_COLOR}│ ID  │ Name               │ Players │ Attack  │ Defence │ Chemistry│{RESET_COLOR}"
     )
     print(
         f"{BLUE_COLOR}├─────┼────────────────────┼─────────┼─────────┼─────────┼──────────┤{RESET_COLOR}"

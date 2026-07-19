@@ -2,18 +2,18 @@ CYAN_COLOR = "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def print_main_menu():
-    """Напечатать главное меню"""
-    print(f"\n{CYAN_COLOR}ГЛАВНОЕ МЕНЮ:{RESET_COLOR}")
-    print("1 - Показать турнирную сетку")
-    print("2 - Показать список команд")
-    print("3 - Показать список игроков")
-    print("4 - Начать симуляцию матча")
-    print("5 - Расширенная статистика")
-    print("0 - Выход")
-    print("\nВыберите опцию: ", end="")
+def print_main_menu() -> None:
+    """Print the main menu."""
+    print(f"\n{CYAN_COLOR}MAIN MENU:{RESET_COLOR}")
+    print("1 - Show tournament bracket")
+    print("2 - Show team list")
+    print("3 - Show player list")
+    print("4 - Start match simulation")
+    print("5 - Advanced statistics")
+    print("0 - Exit")
+    print("\nChoose an option: ", end="")
 
 
-def print_secondary_menu(context: str):
-    """Напечатать второстепенное меню"""
-    print(f"\nВыберите матч для деталей или 0 для возврата в {context}: ", end="")
+def print_secondary_menu(context: str) -> None:
+    """Print a secondary menu."""
+    print(f"\nSelect a match for details or 0 to return to {context}: ", end="")

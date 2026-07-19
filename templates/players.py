@@ -1,3 +1,5 @@
+from typing import Any, Dict, List
+
 GREEN_COLOR = "\033[92m"
 BLUE_COLOR = "\033[94m"
 YELLOW_COLOR = "\033[93m"
@@ -7,16 +9,16 @@ CYAN_COLOR = "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def print_player_card_ascii(player):
+def print_player_card_ascii(player: Dict[str, Any]) -> None:
     position_translation = {
-        "goalkeeper": "Вратарь",
-        "center_back": "Центр.защ",
-        "fullback": "Крайн.защ",
-        "defensive_midfielder": "Оп.полузащ",
-        "center_midfielder": "Центр.полузащ",
-        "attacking_midfielder": "Атак.полузащ",
-        "winger": "Крайн.нап",
-        "forward": "Нападающий",
+        "goalkeeper": "Goalkeeper",
+        "center_back": "Center Back",
+        "fullback": "Fullback",
+        "defensive_midfielder": "Def. Mid",
+        "center_midfielder": "Center Mid",
+        "attacking_midfielder": "Att. Mid",
+        "winger": "Winger",
+        "forward": "Forward",
     }
 
     position = position_translation.get(player["position"], player["position"])
@@ -37,10 +39,10 @@ def print_player_card_ascii(player):
         f"{border_color}║{RESET_COLOR}      {name}      {border_color}║{RESET_COLOR}",
         f"{border_color}║{RESET_COLOR}    {position_display}    {border_color}║{RESET_COLOR}",
         f"{border_color}╠══════════════════════╣{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Атака:   {player['attack']:3d}       {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Защита:  {player['defence']:3d}       {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Физика:  {player['physical']:3d}       {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Техника: {player['technique']:3d}       {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Attack:  {player['attack']:3d}       {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Defence: {player['defence']:3d}       {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Physical:{player['physical']:3d}       {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Technique:{player['technique']:3d}      {border_color}║{RESET_COLOR}",
         f"{border_color}╚══════════════════════╝{RESET_COLOR}",
     ]
 
@@ -48,7 +50,7 @@ def print_player_card_ascii(player):
         print(line)
 
 
-def print_player_card_detailed(player):
+def print_player_card_detailed(player: Dict[str, Any]) -> None:
     border_color = BLUE_COLOR
     value_color = YELLOW_COLOR
 
@@ -62,15 +64,15 @@ def print_player_card_detailed(player):
         f"{border_color}╔══════════════════════════╗{RESET_COLOR}",
         f"{border_color}║{RESET_COLOR} {name} {border_color}║{RESET_COLOR}",
         f"{border_color}╠══════════════════════════╣{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Национальность: {nationality:<10} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Возраст: {age:2d} лет{' ':12} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Общий рейтинг: {value_color}{overall:3d}{RESET_COLOR}{' ':8} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} Потенциал: {value_color}{potential:3d}{RESET_COLOR}{' ':10} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Nationality: {nationality:<10} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Age: {age:2d}{' ':16} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Overall: {value_color}{overall:3d}{RESET_COLOR}{' ':8} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} Potential: {value_color}{potential:3d}{RESET_COLOR}{' ':10} {border_color}║{RESET_COLOR}",
         f"{border_color}╠══════════════════════════╣{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} ⚔️  Атака:    {_create_stat_bar(player['attack'])} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} 🛡️  Защита:   {_create_stat_bar(player['defence'])} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} 💪 Физика:    {_create_stat_bar(player['physical'])} {border_color}║{RESET_COLOR}",
-        f"{border_color}║{RESET_COLOR} 🔧 Техника:   {_create_stat_bar(player['technique'])} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} ⚔️  Attack:    {_create_stat_bar(player['attack'])} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} 🛡️  Defence:   {_create_stat_bar(player['defence'])} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} 💪 Physical:   {_create_stat_bar(player['physical'])} {border_color}║{RESET_COLOR}",
+        f"{border_color}║{RESET_COLOR} 🔧 Technique:  {_create_stat_bar(player['technique'])} {border_color}║{RESET_COLOR}",
         f"{border_color}╚══════════════════════════╝{RESET_COLOR}",
     ]
 
@@ -78,7 +80,7 @@ def print_player_card_detailed(player):
         print(line)
 
 
-def _create_stat_bar(value, max_value=100, length=15):
+def _create_stat_bar(value: int, max_value: int = 100, length: int = 15) -> str:
     filled = int((value / max_value) * length)
     bar = "█" * filled + "░" * (length - filled)
     if value >= 80:
@@ -90,17 +92,17 @@ def _create_stat_bar(value, max_value=100, length=15):
     return f"{color}{bar}{RESET_COLOR} {value:3d}"
 
 
-def print_players_table(players: list, team_name: str = ""):
+def print_players_table(players: List[Dict[str, Any]], team_name: str = "") -> None:
     if team_name:
-        print(f"\n{CYAN_COLOR}=== СОСТАВ КОМАНДЫ: {team_name} ==={RESET_COLOR}")
+        print(f"\n{CYAN_COLOR}=== TEAM ROSTER: {team_name} ==={RESET_COLOR}")
     else:
-        print(f"\n{CYAN_COLOR}=== СПИСОК ИГРОКОВ ==={RESET_COLOR}")
+        print(f"\n{CYAN_COLOR}=== PLAYER LIST ==={RESET_COLOR}")
 
     print(
         f"{BLUE_COLOR}┌─────┬────────────────────┬────────────────────┬──────┬─────────┐{RESET_COLOR}"
     )
     print(
-        f"{BLUE_COLOR}│ ID  │ Имя                │ Позиция            │ Возр.│ Рейтинг │{RESET_COLOR}"
+        f"{BLUE_COLOR}│ ID  │ Name               │ Position           │ Age  │ Rating  │{RESET_COLOR}"
     )
     print(
         f"{BLUE_COLOR}├─────┼────────────────────┼────────────────────┼──────┼─────────┤{RESET_COLOR}"
@@ -131,14 +133,14 @@ def print_players_table(players: list, team_name: str = ""):
             rating_color = GREEN_COLOR
 
         position_translation = {
-            "goalkeeper": "Вратарь",
-            "center_back": "Ц.Защитник",
-            "fullback": "Кр.Защитник",
-            "defensive_midfielder": "Оп.Полузащ",
-            "center_midfielder": "Ц.Полузащ",
-            "attacking_midfielder": "Ат.Полузащ",
-            "winger": "Крайний нап.",
-            "forward": "Нападающий",
+            "goalkeeper": "Goalkeeper",
+            "center_back": "C. Back",
+            "fullback": "Fullback",
+            "defensive_midfielder": "Def. Mid",
+            "center_midfielder": "C. Mid",
+            "attacking_midfielder": "Att. Mid",
+            "winger": "Winger",
+            "forward": "Forward",
         }
 
         position = position_translation.get(player["position"], player["position"])
@@ -151,8 +153,8 @@ def print_players_table(players: list, team_name: str = ""):
     )
 
 
-def print_player_comparison(player1: dict, player2: dict):
-    print(f"\n{CYAN_COLOR}=== СРАВНЕНИЕ ИГРОКОВ ==={RESET_COLOR}")
+def print_player_comparison(player1: Dict[str, Any], player2: Dict[str, Any]) -> None:
+    print(f"\n{CYAN_COLOR}=== PLAYER COMPARISON ==={RESET_COLOR}")
     print(f"{BLUE_COLOR}┌───────────────────┬───────────────────┐{RESET_COLOR}")
     print(
         f"{BLUE_COLOR}│ {player1['name'][:17]:17} │ {player2['name'][:17]:17} {BLUE_COLOR}│{RESET_COLOR}"
@@ -160,9 +162,9 @@ def print_player_comparison(player1: dict, player2: dict):
     print(f"{BLUE_COLOR}├───────────────────┼───────────────────┤{RESET_COLOR}")
 
     stats = ["attack", "defence", "physical", "technique", "speed", "stamina"]
-    stat_names = ["Атака", "Защита", "Физика", "Техника", "Скорость", "Выносливость"]
+    stat_names = ["Attack", "Defence", "Physical", "Technique", "Speed", "Stamina"]
 
-    for stat_name_ru, stat_key in zip(stat_names, stats):
+    for stat_name, stat_key in zip(stat_names, stats):
         val1 = player1.get(stat_key, 0)
         val2 = player2.get(stat_key, 0)
         if val1 > val2:
