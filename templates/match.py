@@ -8,7 +8,9 @@ CYAN_COLOR = "\033[96m"
 RESET_COLOR = "\033[0m"
 
 
-def print_match_details(match: Dict[str, Any], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+def print_match_details(
+    match: Dict[str, Any], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]
+) -> None:
     home_team = next((t for t in teams if t["team_id"] == match["home_team_id"]), None)
     away_team = next((t for t in teams if t["team_id"] == match["away_team_id"]), None)
     if not home_team or not away_team:
@@ -63,7 +65,9 @@ def print_match_details(match: Dict[str, Any], teams: List[Dict[str, Any]], play
         print_match_events(match["events"], teams, players)
 
 
-def print_match_statistics(stats: Dict[str, Any], home_team: Dict[str, Any], away_team: Dict[str, Any]) -> None:
+def print_match_statistics(
+    stats: Dict[str, Any], home_team: Dict[str, Any], away_team: Dict[str, Any]
+) -> None:
     print(f"\n{YELLOW_COLOR}📊 MATCH STATISTICS:{RESET_COLOR}")
     print(f"{BLUE_COLOR}┌──────────────────┬──────────┬──────────┐{RESET_COLOR}")
     print(
@@ -86,16 +90,12 @@ def print_match_statistics(stats: Dict[str, Any], home_team: Dict[str, Any], awa
             home_color = (
                 GREEN_COLOR
                 if home_val > away_val
-                else RED_COLOR
-                if home_val < away_val
-                else YELLOW_COLOR
+                else RED_COLOR if home_val < away_val else YELLOW_COLOR
             )
             away_color = (
                 GREEN_COLOR
                 if away_val > home_val
-                else RED_COLOR
-                if away_val < home_val
-                else YELLOW_COLOR
+                else RED_COLOR if away_val < home_val else YELLOW_COLOR
             )
             print(
                 f"{BLUE_COLOR}│{RESET_COLOR} {stat_name:<16} {BLUE_COLOR}│{RESET_COLOR} {home_color}{home_val:3d}{suffix:1} {RESET_COLOR} {BLUE_COLOR}│{RESET_COLOR} {away_color}{away_val:3d}{suffix:1} {RESET_COLOR} {BLUE_COLOR}│{RESET_COLOR}"
@@ -104,7 +104,11 @@ def print_match_statistics(stats: Dict[str, Any], home_team: Dict[str, Any], awa
     print(f"{BLUE_COLOR}└──────────────────┴──────────┴──────────┘{RESET_COLOR}")
 
 
-def print_match_events(events: List[Dict[str, Any]], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+def print_match_events(
+    events: List[Dict[str, Any]],
+    teams: List[Dict[str, Any]],
+    players: List[Dict[str, Any]],
+) -> None:
     print(f"\n{YELLOW_COLOR}⏰ EVENT TIMELINE:{RESET_COLOR}")
     print(
         f"{BLUE_COLOR}┌──────┬──────────┬────────────────────────────────┐{RESET_COLOR}"

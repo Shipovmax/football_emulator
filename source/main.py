@@ -345,7 +345,8 @@ class AdvancedFootballEmulator:
             if match:
                 if match["status"] == "completed":
                     print(
-                        "❌ This match has already been played! Simulate again? (y/n): ", end=""
+                        "❌ This match has already been played! Simulate again? (y/n): ",
+                        end="",
                     )
                     if input().strip().lower() != "y":
                         return

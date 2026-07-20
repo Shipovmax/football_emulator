@@ -5,7 +5,9 @@ YELLOW_COLOR = "\033[93m"
 RESET_COLOR = "\033[0m"
 
 
-def print_match_timeline(match: Dict[str, Any], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+def print_match_timeline(
+    match: Dict[str, Any], teams: List[Dict[str, Any]], players: List[Dict[str, Any]]
+) -> None:
     home_team = next(team for team in teams if team["team_id"] == match["home_team_id"])
     away_team = next(team for team in teams if team["team_id"] == match["away_team_id"])
 

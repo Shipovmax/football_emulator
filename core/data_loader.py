@@ -63,7 +63,9 @@ class DataLoader:
         return "Attacking"
 
 
-def load_all_data() -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
+def load_all_data() -> (
+    Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]
+):
     loader = DataLoader()
     players = loader.load_players()
     teams = loader.load_teams()

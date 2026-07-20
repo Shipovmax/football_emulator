@@ -7,7 +7,9 @@ RED_COLOR = "\033[91m"
 RESET_COLOR = "\033[0m"
 
 
-def print_tournament_bracket(matches: List[Dict[str, Any]], teams: List[Dict[str, Any]]) -> None:
+def print_tournament_bracket(
+    matches: List[Dict[str, Any]], teams: List[Dict[str, Any]]
+) -> None:
     print(f"\n{BLUE_COLOR}TOURNAMENT BRACKET{RESET_COLOR}")
     print("=" * 50)
 

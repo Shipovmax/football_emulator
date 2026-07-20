@@ -110,7 +110,9 @@ def create_stat_bar(value: int, max_value: int = 100, length: int = 10) -> str:
     return f"{color}{bar}{RESET_COLOR}"
 
 
-def print_teams_table(teams: List[Dict[str, Any]], players: List[Dict[str, Any]]) -> None:
+def print_teams_table(
+    teams: List[Dict[str, Any]], players: List[Dict[str, Any]]
+) -> None:
     print(f"\n{CYAN_COLOR}=== TEAM LIST ==={RESET_COLOR}")
     print(
         f"{BLUE_COLOR}┌─────┬────────────────────┬─────────┬─────────┬─────────┬──────────┐{RESET_COLOR}"
@@ -131,23 +133,17 @@ def print_teams_table(teams: List[Dict[str, Any]], players: List[Dict[str, Any]]
         attack_color = (
             GREEN_COLOR
             if attack_power >= 70
-            else YELLOW_COLOR
-            if attack_power >= 50
-            else RED_COLOR
+            else YELLOW_COLOR if attack_power >= 50 else RED_COLOR
         )
         defense_color = (
             GREEN_COLOR
             if defense_power >= 70
-            else YELLOW_COLOR
-            if defense_power >= 50
-            else RED_COLOR
+            else YELLOW_COLOR if defense_power >= 50 else RED_COLOR
         )
         chemistry_color = (
             GREEN_COLOR
             if chemistry >= 80
-            else YELLOW_COLOR
-            if chemistry >= 60
-            else RED_COLOR
+            else YELLOW_COLOR if chemistry >= 60 else RED_COLOR
         )
 
         print(

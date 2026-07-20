@@ -6,13 +6,17 @@ from .calculators import MatchCalculator, ProbabilityCalculator
 
 
 class MatchSimulator:
-    def __init__(self, players: List[Dict[str, Any]], teams: List[Dict[str, Any]]) -> None:
+    def __init__(
+        self, players: List[Dict[str, Any]], teams: List[Dict[str, Any]]
+    ) -> None:
         self.players = players
         self.teams = teams
         self.calculator = MatchCalculator(players)
         self.prob_calculator = ProbabilityCalculator()
 
-    def simulate_match(self, match: Dict[str, Any], seed: Optional[int] = None) -> Dict[str, Any]:
+    def simulate_match(
+        self, match: Dict[str, Any], seed: Optional[int] = None
+    ) -> Dict[str, Any]:
         """Run a full match simulation with dynamic event generation."""
         if seed is not None:
             random.seed(seed)
@@ -59,7 +63,11 @@ class MatchSimulator:
         return match
 
     def _simulate_match_events(
-        self, home_team: Dict[str, Any], away_team: Dict[str, Any], home_power: float, away_power: float
+        self,
+        home_team: Dict[str, Any],
+        away_team: Dict[str, Any],
+        home_power: float,
+        away_power: float,
     ) -> List[Dict[str, Any]]:
         """Simulate all match events minute by minute."""
         events = []
@@ -105,7 +113,11 @@ class MatchSimulator:
         return sorted(events, key=lambda x: x["minute"])
 
     def _simulate_attack(
-        self, attacking_team: Dict[str, Any], defending_team: Dict[str, Any], minute: int, side: str
+        self,
+        attacking_team: Dict[str, Any],
+        defending_team: Dict[str, Any],
+        minute: int,
+        side: str,
     ) -> Optional[Dict[str, Any]]:
         """Simulate a single attacking possession."""
         # Pick the attacking player
@@ -152,7 +164,11 @@ class MatchSimulator:
         return None
 
     def _simulate_non_attack_event(
-        self, home_team: Dict[str, Any], away_team: Dict[str, Any], minute: int, home_attack_prob: float
+        self,
+        home_team: Dict[str, Any],
+        away_team: Dict[str, Any],
+        minute: int,
+        home_attack_prob: float,
     ) -> Optional[Dict[str, Any]]:
         """Simulate a non-attack event (foul, corner, etc.)."""
         event_type = random.choices(
@@ -190,7 +206,9 @@ class MatchSimulator:
 
         return None
 
-    def _select_attacking_player(self, team: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _select_attacking_player(
+        self, team: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """Pick an attacking player, prioritized by position."""
         positions = ["forward", "winger", "attacking_midfielder", "center_midfielder"]
         for position in positions:
@@ -205,7 +223,9 @@ class MatchSimulator:
                 return random.choices(players, weights=weights)[0]
         return self._select_random_player(team)
 
-    def _select_defending_player(self, team: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _select_defending_player(
+        self, team: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """Pick a defending player, prioritized by position."""
         positions = ["center_back", "fullback", "defensive_midfielder"]
         for position in positions:
@@ -300,7 +320,12 @@ class MatchSimulator:
         }
 
     def _create_shot_event(
-        self, team: Dict[str, Any], shooter: Dict[str, Any], minute: int, side: str, on_target: bool
+        self,
+        team: Dict[str, Any],
+        shooter: Dict[str, Any],
+        minute: int,
+        side: str,
+        on_target: bool,
     ) -> Dict[str, Any]:
         """Build a shot event."""
         descriptions_on = [
@@ -325,7 +350,9 @@ class MatchSimulator:
             "description": f"{shooter['name']}. {description}",
         }
 
-    def _create_foul_event(self, team: Dict[str, Any], minute: int, side: str) -> Dict[str, Any]:
+    def _create_foul_event(
+        self, team: Dict[str, Any], minute: int, side: str
+    ) -> Dict[str, Any]:
         """Build a foul event."""
         fouler = self._select_random_player(team)
         descriptions = ["A hard tackle!", "A foul!", "Rough play!"]
@@ -335,7 +362,11 @@ class MatchSimulator:
         if random.random() < 0.3:
             card = "yellow" if random.random() < 0.9 else "red"
 
-        card_text = "a yellow card" if card == "yellow" else "a red card" if card == "red" else "a warning"
+        card_text = (
+            "a yellow card"
+            if card == "yellow"
+            else "a red card" if card == "red" else "a warning"
+        )
         return {
             "minute": minute,
             "type": "foul",
@@ -345,7 +376,9 @@ class MatchSimulator:
             "description": f"{random.choice(descriptions)} {fouler['name'] if fouler else 'The player'} receives {card_text}.",
         }
 
-    def _create_corner_event(self, team: Dict[str, Any], minute: int, side: str) -> Dict[str, Any]:
+    def _create_corner_event(
+        self, team: Dict[str, Any], minute: int, side: str
+    ) -> Dict[str, Any]:
         """Build a corner-kick event."""
         return {
             "minute": minute,
@@ -512,7 +545,9 @@ class MatchSimulator:
 class LiveMatchSimulator(MatchSimulator):
     """Real-time match simulator with step-by-step output."""
 
-    def simulate_live_match(self, match: Dict[str, Any], delay: float = 0.5) -> Dict[str, Any]:
+    def simulate_live_match(
+        self, match: Dict[str, Any], delay: float = 0.5
+    ) -> Dict[str, Any]:
         """Simulate a match with a step-by-step live feed."""
         print("\n🎥 Starting the live match broadcast!")
         print(
@@ -585,7 +620,9 @@ class LiveMatchSimulator(MatchSimulator):
 
         return None
 
-    def _create_simple_goal_event(self, team: Dict[str, Any], minute: int) -> Dict[str, Any]:
+    def _create_simple_goal_event(
+        self, team: Dict[str, Any], minute: int
+    ) -> Dict[str, Any]:
         """Build a simplified goal event for the live feed."""
         scorer = self._select_attacking_player(team)
         return {
@@ -596,7 +633,9 @@ class LiveMatchSimulator(MatchSimulator):
             "description": f"{scorer['name'] if scorer else 'A player'} scores in the {minute}th minute!",
         }
 
-    def _create_simple_other_event(self, team: Dict[str, Any], minute: int) -> Dict[str, Any]:
+    def _create_simple_other_event(
+        self, team: Dict[str, Any], minute: int
+    ) -> Dict[str, Any]:
         """Build a simplified non-goal event for the live feed."""
         event_type = random.choice(["shot", "foul", "corner"])
         player = self._select_random_player(team)
@@ -615,7 +654,9 @@ class LiveMatchSimulator(MatchSimulator):
             "description": f"{descriptions[event_type]} ({minute}')",
         }
 
-    def _display_live_event(self, event: Dict[str, Any], home_score: int, away_score: int) -> None:
+    def _display_live_event(
+        self, event: Dict[str, Any], home_score: int, away_score: int
+    ) -> None:
         """Print a live event to the console."""
         minute = event["minute"]
 
