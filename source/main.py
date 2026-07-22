@@ -380,6 +380,9 @@ class AdvancedFootballEmulator:
         print(f"\n{YELLOW_COLOR}📈 TEAM STATISTICS:{RESET_COLOR}")
         for team in self.teams:
             team_players = [p for p in self.players if p["id"] in team["player_ids"]]
+            if not team_players:
+                print(f"{team['team_name']}: no players in the roster")
+                continue
             avg_age = sum(p["age"] for p in team_players) / len(team_players)
             avg_rating = sum(p["overall"] for p in team_players) / len(team_players)
             print(
