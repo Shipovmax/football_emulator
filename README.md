@@ -101,3 +101,9 @@ Match events are generated minute by minute (1–90):
 
 - GitHub: [Shipovmax](https://github.com/Shipovmax)
 - Email: shipov.max@icloud.com
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
